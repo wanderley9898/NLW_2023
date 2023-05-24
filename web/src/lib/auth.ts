@@ -1,5 +1,5 @@
-import decode from 'jwt-decode';
-import { cookies } from "next/headers";
+import decode from 'jwt-decode'
+import { cookies } from 'next/headers'
 
 interface User {
   sub: string
@@ -8,13 +8,13 @@ interface User {
 }
 
 export function getUser(): User {
-  const token = cookies().get('token')?.value;
+  const token = cookies().get('token')?.value
 
-  if(!token){
+  if (!token) {
     throw new Error('Unauthenticated')
   }
 
   const user: User = decode(token)
 
-  return user;
+  return user
 }
