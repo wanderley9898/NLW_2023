@@ -1,14 +1,23 @@
 import 'dotenv/config'
 
 import cors from '@fastify/cors'
-
 import fastifyJwt from '@fastify/jwt'
+import fastifyMultipart from '@fastify/multipart'
 import fastify from 'fastify'
 
+import { resolve } from 'node:path'
 import { authRoutes } from './routes/auth'
 import { memoriesRoutes } from './routes/memories'
+import { uploadRoutes } from './routes/upload'
 
 const app = fastify()
+
+app.register(fastifyMultipart)
+
+app.register(require('@fastify/static'), {
+  root: resolve(__dirname, '../uploads'),
+  prefix: '/uploads',
+})
 
 app.register(cors, {
   origin: true,
@@ -17,12 +26,10 @@ app.register(cors, {
 app.register(fastifyJwt, {
   secret: 'spacetime',
 })
-app.get('/api/',async () => {
-  return 'sdasdad'
-})
 
 app.register(authRoutes)
 app.register(memoriesRoutes)
+app.register(uploadRoutes)
 
 app
   .listen({
@@ -31,7 +38,3 @@ app
   .then(() => {
     console.log('HTTP server running on http://localhost:3333')
   })
-function auth(instance: FastifyInstance<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, FastifyTypeProvider>, opts: FastifyPluginOptions, done: (err?: Error | undefined) => void): void {
-  throw new Error('Function not implemented.')
-}
-
